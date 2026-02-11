@@ -95,6 +95,22 @@ export interface GetBalanceResponse {
 }
 
 /**
+ * Pricing item from GET /pricing
+ */
+export interface PricingItem {
+  task_type: string;
+  user_cost: number;
+  status: 'active' | 'inactive' | 'soon';
+}
+
+/**
+ * Pricing response from GET /pricing
+ */
+export interface PricingResponse {
+  pricing: PricingItem[];
+}
+
+/**
  * Client configuration options
  */
 export interface ClientOptions {

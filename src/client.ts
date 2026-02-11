@@ -7,6 +7,8 @@ import {
   GetBalanceRequest,
   GetBalanceResponse,
   GetTaskResultRequest,
+  PricingItem,
+  PricingResponse,
   TaskResult,
 } from './types';
 import {
@@ -177,6 +179,55 @@ export class CapBypassClient {
     }
 
     return response;
+  }
+
+  /**
+   * Get pricing for all task types.
+   * This is a public endpoint and does not require authentication.
+   * @returns Array of pricing items with task_type and user_cost
+   */
+  async getPricing(): Promise<PricingItem[]> {
+    let lastError: Error | undefined;
+
+    for (let attempt = 0; attempt <= 3; attempt++) {
+      try {
+        const response = await this.httpClient.get<PricingResponse>('/pricing');
+        return response.data.pricing;
+      } catch (error) {
+        const axiosError = error as AxiosError;
+
+        if (
+          axiosError.response &&
+          [502, 503, 504].includes(axiosError.response.status)
+        ) {
+          if (attempt < 3) {
+            const backoff =
+              Math.min(10, Math.pow(2, attempt)) + Math.random();
+            await this.sleep(backoff * 1000);
+            continue;
+          }
+          throw new GatewayError(
+            axiosError.response.status,
+            axiosError.response.data as string
+          );
+        }
+
+        if (axiosError.code === 'ECONNREFUSED' || axiosError.code === 'ETIMEDOUT') {
+          if (attempt < 3) {
+            const backoff =
+              Math.min(10, Math.pow(2, attempt)) + Math.random();
+            await this.sleep(backoff * 1000);
+            lastError = new NetworkError('Connection failed', axiosError);
+            continue;
+          }
+          throw new NetworkError('Connection failed', axiosError);
+        }
+
+        throw new NetworkError(axiosError.message, axiosError);
+      }
+    }
+
+    throw lastError!;
   }
 
   /**

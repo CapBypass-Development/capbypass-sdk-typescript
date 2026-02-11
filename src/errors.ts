@@ -158,6 +158,8 @@ export function parseError(errorCode: string, errorDescription: string): never {
     case 'ERROR_INVALID_TASK_DATA':
     case 'ERROR_TASK_ABSENT':
     case 'ERROR_TASK_NOT_SUPPORTED':
+    case 'TASK_TYPE_COMING_SOON':
+    case 'TASK_TYPE_INACTIVE':
       throw new ValidationError(errorCode, errorDescription);
 
     case 'ERROR_TASK_NOT_FOUND':

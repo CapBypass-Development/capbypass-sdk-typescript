@@ -230,12 +230,36 @@ TaskType.RECAPTCHA_V3_ENTERPRISE         // ReCaptchaV3EnterpriseTask
 TaskType.RECAPTCHA_V3_ENTERPRISE_PROXYLESS  // ReCaptchaV3EnterpriseTaskProxyLess
 ```
 
+## Documentation
+
+### 📚 Core Documentation
+- [Quick Start Guide](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/quickstart/typescript.md)
+- [Complete API Reference](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/api-reference/typescript-sdk.md)
+- [Full SDK Documentation](https://capbypass.dev/docs/sdks/typescript)
+
+### 🔧 Advanced Guides
+- [Proxy Configuration](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/guides/proxy-configuration.md) — HTTP, HTTPS, SOCKS5 proxy support with rotation strategies
+- [Error Handling](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/guides/error-handling.md) — Retry strategies, circuit breakers, production alerting
+- [Performance Optimization](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/guides/performance-optimization.md) — Concurrent solving, connection pooling, token caching
+- [Production Deployment](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/guides/production-deployment.md) — Kubernetes, AWS Lambda, monitoring, security
+
+### 🔄 Migration
+- [Migrating from Capsolver](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/migration/from-capsolver.md) — 100% API compatible, drop-in replacement
+
 ## Examples
 
-See the [examples](examples/) directory for complete examples:
+### Basic Examples
+See the [examples](examples/) directory for complete runnable examples:
 - [recaptcha-v2.ts](examples/recaptcha-v2.ts) - reCAPTCHA v2 solving
 - [recaptcha-v3.ts](examples/recaptcha-v3.ts) - reCAPTCHA v3 solving
 - [aws-waf.ts](examples/aws-waf.ts) - AWS WAF challenge solving
+
+### Advanced Examples
+Full integration examples in the [documentation](https://github.com/CapBypass-Development/capbypass-sdks/tree/main/docs/examples):
+- E-commerce checkout automation
+- Social media automation
+- Web scraping with CAPTCHA handling
+- Microservice integration patterns
 
 ## Testing
 

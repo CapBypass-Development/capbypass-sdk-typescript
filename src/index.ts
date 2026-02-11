@@ -11,6 +11,7 @@ export type {
   TaskResult,
   ClientOptions,
   TaskTypeValue,
+  PricingItem,
 } from './types';
 export {
   CapBypassError,
