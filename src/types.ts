@@ -57,6 +57,7 @@ export interface TaskResult {
 export interface CreateTaskRequest {
   clientKey: string;
   task: BaseTask;
+  developerKey?: string;
 }
 
 /**
@@ -116,4 +117,5 @@ export interface PricingResponse {
 export interface ClientOptions {
   apiKey?: string;
   baseURL?: string;
+  developerKey?: string;
 }

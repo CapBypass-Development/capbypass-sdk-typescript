@@ -15,7 +15,6 @@ import {
   parseError,
   GatewayError,
   NetworkError,
-  ParseError,
   RateLimitError,
   ServerError,
   SolverError,
@@ -31,6 +30,7 @@ const USER_AGENT = `capbypass-sdk-typescript/${SDK_VERSION}`;
  */
 export class CapBypassClient {
   private apiKey: string;
+  private developerKey?: string;
   private httpClient: AxiosInstance;
 
   /**
@@ -39,6 +39,7 @@ export class CapBypassClient {
    */
   constructor(options: ClientOptions = {}) {
     this.apiKey = options.apiKey || process.env.CAPBYPASS_API_KEY || '';
+    this.developerKey = options.developerKey || process.env.CAPBYPASS_DEVELOPER_KEY || undefined;
 
     if (!this.apiKey) {
       throw new Error(
@@ -144,6 +145,7 @@ export class CapBypassClient {
     const request: CreateTaskRequest = {
       clientKey: this.apiKey,
       task,
+      ...(this.developerKey && { developerKey: this.developerKey }),
     };
 
     const response = await this.makeRequest<CreateTaskResponse>(
@@ -265,6 +267,7 @@ export class CapBypassClient {
     const startTime = Date.now();
     let attempt = 0;
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const elapsed = (Date.now() - startTime) / 1000;
       if (elapsed > timeout) {
