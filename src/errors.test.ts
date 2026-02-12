@@ -157,6 +157,10 @@ describe('CapBypass Errors', () => {
       expect(() => parseError('TASK_TYPE_INACTIVE', 'inactive')).toThrow(ValidationError);
     });
 
+    it('throws ValidationError for ERROR_INVALID_DEVELOPER_KEY', () => {
+      expect(() => parseError('ERROR_INVALID_DEVELOPER_KEY', 'invalid developer key')).toThrow(ValidationError);
+    });
+
     it('throws TaskNotFoundError for ERROR_TASK_NOT_FOUND', () => {
       expect(() => parseError('ERROR_TASK_NOT_FOUND', 'not found')).toThrow(TaskNotFoundError);
     });
