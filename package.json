@@ -1,6 +1,6 @@
 {
   "name": "@capbypass/sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Official TypeScript/JavaScript SDK for CapBypass CAPTCHA solving service",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
