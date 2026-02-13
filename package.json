@@ -47,7 +47,7 @@
   },
   "homepage": "https://capbypass.dev/docs/sdks/typescript",
   "dependencies": {
-    "axios": "^1.6.7"
+    "axios": "^1.13.5"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
