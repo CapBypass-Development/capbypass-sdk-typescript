@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-Official TypeScript/JavaScript SDK for the CapBypass CAPTCHA solving service. Supports reCAPTCHA v2, reCAPTCHA v3, and AWS WAF challenges.
+Official TypeScript/JavaScript SDK for the [CapBypass](https://capbypass.pro) CAPTCHA solving service. Supports reCAPTCHA v2, reCAPTCHA v3, and AWS WAF challenges.
 
 Works in both Node.js and browser environments.
 
@@ -235,7 +235,7 @@ TaskType.RECAPTCHA_V3_ENTERPRISE_PROXYLESS  // ReCaptchaV3EnterpriseTaskProxyLes
 ### 📚 Core Documentation
 - [Quick Start Guide](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/quickstart/typescript.md)
 - [Complete API Reference](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/api-reference/typescript-sdk.md)
-- [Full SDK Documentation](https://capbypass.dev/docs/sdks/typescript)
+- [Full SDK Documentation](https://capbypass.pro/docs/sdks/typescript)
 
 ### 🔧 Advanced Guides
 - [Proxy Configuration](https://github.com/CapBypass-Development/capbypass-sdks/blob/main/docs/guides/proxy-configuration.md) — HTTP, HTTPS, SOCKS5 proxy support with rotation strategies
@@ -292,7 +292,10 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Links
 
-- [Documentation](https://capbypass.dev/docs/sdks/typescript)
+- [Website](https://capbypass.pro)
+- [Documentation](https://capbypass.pro/docs/sdks/typescript)
+- [Dashboard / Sign up](https://capbypass.pro/signup)
+- [Pricing](https://capbypass.pro/pricing)
 - [npm Package](https://www.npmjs.com/package/@capbypass/sdk)
 - [GitHub Repository](https://github.com/CapBypass-Development/capbypass-sdk-typescript)
 - [Bug Reports](https://github.com/CapBypass-Development/capbypass-sdk-typescript/issues)
