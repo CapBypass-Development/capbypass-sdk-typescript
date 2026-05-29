@@ -121,48 +121,53 @@ describe('CapBypass Errors', () => {
   });
 
   describe('parseError', () => {
+    // Codes mirror the gateway contract in @solver-platform/shared errors.ts.
     it('throws AuthenticationError for ERROR_KEY_DOES_NOT_EXIST', () => {
       expect(() => parseError('ERROR_KEY_DOES_NOT_EXIST', 'bad key')).toThrow(AuthenticationError);
-    });
-
-    it('throws AuthenticationError for ERROR_KEY_DENIED_ACCESS', () => {
-      expect(() => parseError('ERROR_KEY_DENIED_ACCESS', 'denied')).toThrow(AuthenticationError);
     });
 
     it('throws InsufficientBalanceError for ERROR_ZERO_BALANCE', () => {
       expect(() => parseError('ERROR_ZERO_BALANCE', 'no balance')).toThrow(InsufficientBalanceError);
     });
 
-    it('throws InsufficientBalanceError for ERROR_NO_SLOT_AVAILABLE', () => {
-      expect(() => parseError('ERROR_NO_SLOT_AVAILABLE', 'no slots')).toThrow(InsufficientBalanceError);
-    });
-
     it('throws ValidationError for ERROR_INVALID_TASK_DATA', () => {
       expect(() => parseError('ERROR_INVALID_TASK_DATA', 'bad data')).toThrow(ValidationError);
-    });
-
-    it('throws ValidationError for ERROR_TASK_ABSENT', () => {
-      expect(() => parseError('ERROR_TASK_ABSENT', 'absent')).toThrow(ValidationError);
-    });
-
-    it('throws ValidationError for ERROR_TASK_NOT_SUPPORTED', () => {
-      expect(() => parseError('ERROR_TASK_NOT_SUPPORTED', 'unsupported')).toThrow(ValidationError);
-    });
-
-    it('throws ValidationError for TASK_TYPE_COMING_SOON', () => {
-      expect(() => parseError('TASK_TYPE_COMING_SOON', 'coming soon')).toThrow(ValidationError);
-    });
-
-    it('throws ValidationError for TASK_TYPE_INACTIVE', () => {
-      expect(() => parseError('TASK_TYPE_INACTIVE', 'inactive')).toThrow(ValidationError);
     });
 
     it('throws ValidationError for ERROR_INVALID_DEVELOPER_KEY', () => {
       expect(() => parseError('ERROR_INVALID_DEVELOPER_KEY', 'invalid developer key')).toThrow(ValidationError);
     });
 
+    it('throws ValidationError for ERROR_PROXY_NOT_DEFINED', () => {
+      expect(() => parseError('ERROR_PROXY_NOT_DEFINED', 'proxy required')).toThrow(ValidationError);
+    });
+
+    it('throws ValidationError for ERROR_WRONG_TASK_TYPE', () => {
+      expect(() => parseError('ERROR_WRONG_TASK_TYPE', 'wrong type')).toThrow(ValidationError);
+    });
+
+    it('throws ValidationError for ERROR_TASK_TYPE_COMING_SOON', () => {
+      expect(() => parseError('ERROR_TASK_TYPE_COMING_SOON', 'coming soon')).toThrow(ValidationError);
+    });
+
+    it('throws ValidationError for ERROR_TASK_TYPE_INACTIVE', () => {
+      expect(() => parseError('ERROR_TASK_TYPE_INACTIVE', 'inactive')).toThrow(ValidationError);
+    });
+
     it('throws TaskNotFoundError for ERROR_TASK_NOT_FOUND', () => {
       expect(() => parseError('ERROR_TASK_NOT_FOUND', 'not found')).toThrow(TaskNotFoundError);
+    });
+
+    it('throws SolverError for ERROR_CAPTCHA_UNSOLVABLE', () => {
+      expect(() => parseError('ERROR_CAPTCHA_UNSOLVABLE', 'unsolvable')).toThrow(SolverError);
+    });
+
+    it('throws TimeoutError for ERROR_TIMEOUT', () => {
+      expect(() => parseError('ERROR_TIMEOUT', 'timed out')).toThrow(TimeoutError);
+    });
+
+    it('throws InternalError for ERROR_TASK_QUEUE_FULL', () => {
+      expect(() => parseError('ERROR_TASK_QUEUE_FULL', 'at capacity')).toThrow(InternalError);
     });
 
     it('throws InternalError for unknown error codes', () => {
