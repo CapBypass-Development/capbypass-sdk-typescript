@@ -17,6 +17,14 @@ export const TaskType = {
   // reCAPTCHA v3 Enterprise
   RECAPTCHA_V3_ENTERPRISE: 'ReCaptchaV3EnterpriseTask',
   RECAPTCHA_V3_ENTERPRISE_PROXYLESS: 'ReCaptchaV3EnterpriseTaskProxyLess',
+
+  // GeeTest v3 + v4
+  GEETEST: 'GeetestTask',
+  GEETEST_PROXYLESS: 'GeetestTaskProxyLess',
+
+  // hCaptcha
+  HCAPTCHA: 'HCaptchaTask',
+  HCAPTCHA_PROXYLESS: 'HCaptchaTaskProxyless',
 } as const;
 
 export type TaskTypeValue = typeof TaskType[keyof typeof TaskType];

@@ -146,26 +146,33 @@ export class ParseError extends Error {
  * Parse API error response and throw appropriate error
  */
 export function parseError(errorCode: string, errorDescription: string): never {
+  // Codes mirror the gateway contract in @solver-platform/shared `errors.ts`.
   switch (errorCode) {
     case 'ERROR_KEY_DOES_NOT_EXIST':
-    case 'ERROR_KEY_DENIED_ACCESS':
       throw new AuthenticationError(errorCode, errorDescription);
 
     case 'ERROR_ZERO_BALANCE':
-    case 'ERROR_NO_SLOT_AVAILABLE':
       throw new InsufficientBalanceError(errorCode, errorDescription);
 
     case 'ERROR_INVALID_TASK_DATA':
-    case 'ERROR_TASK_ABSENT':
-    case 'ERROR_TASK_NOT_SUPPORTED':
-    case 'TASK_TYPE_COMING_SOON':
-    case 'TASK_TYPE_INACTIVE':
     case 'ERROR_INVALID_DEVELOPER_KEY':
+    case 'ERROR_PROXY_NOT_DEFINED':
+    case 'ERROR_WRONG_TASK_TYPE':
+    case 'ERROR_TASK_TYPE_COMING_SOON':
+    case 'ERROR_TASK_TYPE_INACTIVE':
       throw new ValidationError(errorCode, errorDescription);
 
     case 'ERROR_TASK_NOT_FOUND':
       throw new TaskNotFoundError(errorCode, errorDescription);
 
+    case 'ERROR_CAPTCHA_UNSOLVABLE':
+      throw new SolverError(errorDescription);
+
+    case 'ERROR_TIMEOUT':
+      throw new TimeoutError();
+
+    // ERROR_TASK_QUEUE_FULL, ERROR_WORKER_CRASHED, ERROR_INTERNAL, and any
+    // unknown code -> retryable internal failure.
     default:
       throw new InternalError(errorCode, errorDescription);
   }
