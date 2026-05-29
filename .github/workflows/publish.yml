@@ -43,7 +43,10 @@ jobs:
         echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
 
     - name: Publish to npm
-      run: npm publish --provenance --access public
+      # No --provenance: npm/sigstore provenance only works on GitHub-hosted
+      # runners ("Unsupported runner environment: self-hosted"). We publish
+      # from the self-hosted Coolify runner, so provenance is disabled.
+      run: npm publish --access public
 
     - name: Commit version bump and create tag
       run: |
