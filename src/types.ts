@@ -25,6 +25,10 @@ export const TaskType = {
   // hCaptcha
   HCAPTCHA: 'HCaptchaTask',
   HCAPTCHA_PROXYLESS: 'HCaptchaTaskProxyless',
+
+  // CaptchaFox
+  CAPTCHA_FOX: 'CaptchaFoxTask',
+  CAPTCHA_FOX_PROXYLESS: 'CaptchaFoxTaskProxyLess',
 } as const;
 
 export type TaskTypeValue = typeof TaskType[keyof typeof TaskType];
