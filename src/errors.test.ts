@@ -142,6 +142,14 @@ describe('CapBypass Errors', () => {
       expect(() => parseError('ERROR_PROXY_NOT_DEFINED', 'proxy required')).toThrow(ValidationError);
     });
 
+    it('throws ValidationError for ERROR_PROXY_CONNECTION_FAILED', () => {
+      expect(() => parseError('ERROR_PROXY_CONNECTION_FAILED', 'proxy unreachable')).toThrow(ValidationError);
+    });
+
+    it('throws ValidationError for ERROR_PROXY_BANNED', () => {
+      expect(() => parseError('ERROR_PROXY_BANNED', 'proxy IP blocked')).toThrow(ValidationError);
+    });
+
     it('throws ValidationError for ERROR_WRONG_TASK_TYPE', () => {
       expect(() => parseError('ERROR_WRONG_TASK_TYPE', 'wrong type')).toThrow(ValidationError);
     });
