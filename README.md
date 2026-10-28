@@ -11,7 +11,7 @@ Works in both Node.js and browser environments.
 ## Features
 
 - ✅ **Simple API**: One-line `solve()` method or advanced `createTask()`/`getTaskResult()` control
-- 🔄 **Automatic Polling**: Built-in adaptive polling with exponential backoff
+- 🔄 **Automatic Polling**: Built-in adaptive polling (first poll after 1 s, then every 1-3 s)
 - 🛡️ **Robust Error Handling**: Typed errors for all API and network failures
 - 🔁 **Smart Retry Logic**: Automatic retry on network/gateway errors
 - 🎯 **Full TypeScript Support**: Complete type definitions for excellent IDE support
@@ -105,6 +105,8 @@ const solution = await client.solve(task, timeout);
 - `timeout`: Maximum wait time in seconds (default: 120)
 - Returns: Promise<Solution>
 
+`solve()` polls `getTaskResult` after a wait of 1 s from task creation, then waits 1, 1, 2 and 2 s between the next polls, and 3 s from then on (never faster than 1 s, never slower than 3 s). `timeout` is counted from the end of `createTask` and is not changed by the polling schedule.
+
 ### Advanced API
 
 For full control over task lifecycle:
@@ -113,7 +115,7 @@ For full control over task lifecycle:
 // Create task
 const taskId = await client.createTask(task);
 
-// Poll for result
+// Poll for result (every 1 to 3 seconds, starting about 1 second after createTask)
 const result = await client.getTaskResult(taskId);
 
 // Check balance

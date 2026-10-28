@@ -25,6 +25,16 @@ const DEFAULT_BASE_URL = 'https://api.capbypass.pro';
 const SDK_VERSION = '1.0.0';
 const USER_AGENT = `capbypass-sdk-typescript/${SDK_VERSION}`;
 
+/** Seconds to wait before the first polls of a task, then MAX_POLL_DELAY_SECONDS. */
+const POLL_DELAYS_SECONDS = [1, 1, 1, 2, 2];
+/** Stays inside the documented range: poll every 1 to 3 seconds, never faster. */
+const MAX_POLL_DELAY_SECONDS = 3;
+
+/** Seconds to wait before the given poll (1-based): 1, 1, 1, 2, 2, then 3. */
+export function pollDelaySeconds(poll: number): number {
+  return POLL_DELAYS_SECONDS[poll - 1] ?? MAX_POLL_DELAY_SECONDS;
+}
+
 /**
  * CapBypass API Client
  */
@@ -254,7 +264,10 @@ export class CapBypassClient {
   }
 
   /**
-   * Create a task and poll until solved or timeout
+   * Create a task and poll until solved or timeout.
+   *
+   * The first poll happens 1 s after the task is created, then every 1 s for
+   * the first three polls, growing to 3 s (waits: 1, 1, 1, 2, 2, 3, 3, ...).
    * @param task - Task configuration
    * @param timeout - Maximum wait time in seconds (default: 120)
    * @returns Solution object
@@ -265,10 +278,14 @@ export class CapBypassClient {
   ): Promise<Record<string, any>> {
     const taskId = await this.createTask(task);
     const startTime = Date.now();
-    let attempt = 0;
+    let poll = 0;
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
+      // Wait before every poll, the first one included
+      poll++;
+      await this.sleep(pollDelaySeconds(poll) * 1000);
+
       const elapsed = (Date.now() - startTime) / 1000;
       if (elapsed > timeout) {
         throw new TimeoutError();
@@ -285,11 +302,6 @@ export class CapBypassClient {
           result.errorDescription || 'Task failed'
         );
       }
-
-      // Adaptive polling: min(5, ceil(attempt / 2))
-      attempt++;
-      const pollInterval = Math.min(5, Math.ceil(attempt / 2));
-      await this.sleep(pollInterval * 1000);
     }
   }
 }
