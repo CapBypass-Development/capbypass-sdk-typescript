@@ -22,7 +22,14 @@ import {
 } from './errors';
 
 const DEFAULT_BASE_URL = 'https://api.capbypass.pro';
-const SDK_VERSION = '1.0.0';
+/**
+ * Replaced at build time by tsup (tsup.config.js, `define`) and in tests by jest
+ * (jest.config.js, `globals`) with the "version" of package.json. Undefined
+ * only when the sources are run without either.
+ */
+declare const __SDK_VERSION__: string | undefined;
+export const SDK_VERSION: string =
+  typeof __SDK_VERSION__ === 'string' ? __SDK_VERSION__ : 'unknown';
 const USER_AGENT = `capbypass-sdk-typescript/${SDK_VERSION}`;
 
 /** Seconds to wait before the first polls of a task, then MAX_POLL_DELAY_SECONDS. */

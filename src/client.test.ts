@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CapBypassClient, pollDelaySeconds } from './client';
+import { CapBypassClient, SDK_VERSION, pollDelaySeconds } from './client';
 import { TaskType } from './types';
 import {
   AuthenticationError,
@@ -54,6 +54,19 @@ describe('CapBypassClient', () => {
 
     it('should throw error if no API key', () => {
       expect(() => new CapBypassClient()).toThrow('API key is required');
+    });
+
+    it('should send the package.json version in the User-Agent', () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { version } = require('../package.json');
+      expect(SDK_VERSION).toBe(version);
+      expect(mockedAxios.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'User-Agent': `capbypass-sdk-typescript/${version}`,
+          }),
+        })
+      );
     });
   });
 
