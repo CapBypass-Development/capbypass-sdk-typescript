@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CapBypassClient } from './client';
+import { CapBypassClient, pollDelaySeconds } from './client';
 import { TaskType } from './types';
 import {
   AuthenticationError,
@@ -262,6 +262,85 @@ describe('CapBypassClient', () => {
         client.solve({ type: TaskType.RECAPTCHA_V2_PROXYLESS }, 3)
       ).rejects.toThrow(TimeoutError);
     }, 10000);
+  });
+
+  describe('solve polling schedule', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    // createTask answers at once; getTaskResult is ready on poll number
+    // readyAfter (0 = never). Returns the poll times in ms since the call.
+    function mockPolls(readyAfter: number): number[] {
+      const pollTimes: number[] = [];
+      const t0 = Date.now();
+      mockPost.mockImplementation(async (url: string) => {
+        if (url === '/createTask') {
+          return { data: { errorId: 0, taskId: 'test-task-id' } };
+        }
+        pollTimes.push(Date.now() - t0);
+        if (readyAfter > 0 && pollTimes.length >= readyAfter) {
+          return {
+            data: { errorId: 0, status: 'ready', solution: { token: 'ok' } },
+          };
+        }
+        return { data: { errorId: 0, status: 'processing' } };
+      });
+      return pollTimes;
+    }
+
+    it('should wait 1s before the first poll, then 1,1,2,2,3,3,3 between polls', async () => {
+      const pollTimes = mockPolls(8);
+
+      const promise = client.solve({ type: TaskType.RECAPTCHA_V2_PROXYLESS });
+      await jest.advanceTimersByTimeAsync(999);
+      expect(pollTimes).toEqual([]);
+      await jest.advanceTimersByTimeAsync(30000);
+
+      await expect(promise).resolves.toEqual({ token: 'ok' });
+      // Waits before each poll: 1, 1, 1, 2, 2, 3, 3, 3 s
+      expect(pollTimes).toEqual([
+        1000, 2000, 3000, 5000, 7000, 10000, 13000, 16000,
+      ]);
+    });
+
+    it('should still honour an explicit timeout', async () => {
+      const pollTimes = mockPolls(0);
+
+      const promise = client.solve(
+        { type: TaskType.RECAPTCHA_V2_PROXYLESS },
+        5
+      );
+      const assertion = expect(promise).rejects.toThrow(TimeoutError);
+      await jest.advanceTimersByTimeAsync(30000);
+
+      await assertion;
+      // Polls at 1, 2, 3 and 5 s; the wait ending at 7 s is past the timeout
+      expect(pollTimes).toEqual([1000, 2000, 3000, 5000]);
+    });
+
+    it('should use a 120s timeout by default', async () => {
+      const pollTimes = mockPolls(0);
+
+      const promise = client.solve({ type: TaskType.RECAPTCHA_V2_PROXYLESS });
+      const assertion = expect(promise).rejects.toThrow(TimeoutError);
+      await jest.advanceTimersByTimeAsync(200000);
+
+      await assertion;
+      // 7 s ramp, then every 3 s: the last poll is at 118 s
+      expect(pollTimes).toHaveLength(5 + 37);
+      expect(pollTimes[pollTimes.length - 1]).toBe(118000);
+    });
+
+    it('should expose the wait schedule', () => {
+      expect([1, 2, 3, 4, 5, 6, 7, 8, 9].map(pollDelaySeconds)).toEqual([
+        1, 1, 1, 2, 2, 3, 3, 3, 3,
+      ]);
+    });
   });
 
   describe('retry logic', () => {
