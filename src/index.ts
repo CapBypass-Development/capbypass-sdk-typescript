@@ -3,7 +3,7 @@
  * Official SDK for CapBypass CAPTCHA solving service
  */
 
-export { CapBypassClient } from './client';
+export { CapBypassClient, SDK_VERSION } from './client';
 export { TaskType } from './types';
 export type {
   BaseTask,

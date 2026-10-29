@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "build": "tsup",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

@@ -1,6 +1,10 @@
+const { version } = require('./package.json');
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  // Same identifier tsup.config.js defines at build time.
+  globals: { __SDK_VERSION__: version },
   roots: ['<rootDir>/src'],
   testMatch: ['**/*.test.ts'],
   collectCoverageFrom: [
