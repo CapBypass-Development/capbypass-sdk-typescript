@@ -105,7 +105,7 @@ const solution = await client.solve(task, timeout);
 - `timeout`: Maximum wait time in seconds (default: 120)
 - Returns: Promise<Solution>
 
-`solve()` polls `getTaskResult` after a wait of 1 s from task creation, then waits 1, 1, 2 and 2 s between the next polls, and 3 s from then on (never faster than 1 s, never slower than 3 s). `timeout` is counted from the end of `createTask` and is not changed by the polling schedule.
+`solve()` waits 1 s after creating the task before its first `getTaskResult` request, then waits 1, 1, 2 and 2 s between the next requests, and 3 s between requests from then on. These are waits between requests: the time a request itself takes comes on top. `timeout` is counted from the end of `createTask` and is not changed by the waiting schedule.
 
 ### Advanced API
 
@@ -115,8 +115,26 @@ For full control over task lifecycle:
 // Create task
 const taskId = await client.createTask(task);
 
-// Poll for result (every 1 to 3 seconds, starting about 1 second after createTask)
-const result = await client.getTaskResult(taskId);
+// Poll for result. getTaskResult does not wait by itself: wait 1 s after
+// createTask, then 1 to 3 s between calls (not faster), until the task is
+// ready or failed, and give up after your own deadline.
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const deadline = Date.now() + 120_000;
+await sleep(1000);
+while (true) {
+  const result = await client.getTaskResult(taskId);
+  if (result.status === 'ready') {
+    console.log(result.solution);
+    break;
+  }
+  if (result.status === 'failed') {
+    throw new Error(result.errorDescription || 'Task failed');
+  }
+  if (Date.now() > deadline) {
+    throw new Error('Task not ready in time');
+  }
+  await sleep(2000);
+}
 
 // Check balance
 const balance = await client.getBalance();
