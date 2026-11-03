@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-Official TypeScript/JavaScript SDK for the [CapBypass](https://capbypass.pro) CAPTCHA solving service. Supports reCAPTCHA v2, reCAPTCHA v3, and AWS WAF challenges.
+Official TypeScript/JavaScript SDK for the [CapBypass](https://capbypass.pro) CAPTCHA solving service. Supports reCAPTCHA v2, reCAPTCHA v3, AWS WAF challenges, and Cloudflare Turnstile.
 
 Works in both Node.js and browser environments.
 
@@ -184,6 +184,32 @@ const solution = await client.solve({
 }, 120);
 ```
 
+### Cloudflare Turnstile
+
+`websiteURL` and `websiteKey` are required. `action` (1 to 32 characters of `A-Z a-z 0-9 _ -`) and `cData` (1 to 255 characters of the same set) are optional and replace the page's `data-action` / `data-cdata`. The solution holds `token` (the `cf-turnstile-response` value) and `timing.solveMs`; Turnstile returns no `userAgent`.
+
+```typescript
+const solution = await client.solve({
+  type: TaskType.TURNSTILE_PROXYLESS,
+  websiteURL: 'https://example.com/login',
+  websiteKey: '0x4AAAAAAAxxxxxxxxxxxxxx',
+}, 120);
+const token = solution.token;
+```
+
+With your own proxy (`TurnstileTask` requires one): a single `http(s)` URL in the `proxy` field, no `socks`:
+
+```typescript
+const solution = await client.solve({
+  type: TaskType.TURNSTILE,
+  websiteURL: 'https://example.com/login',
+  websiteKey: '0x4AAAAAAAxxxxxxxxxxxxxx',
+  action: 'login',
+  cData: 'session-42',
+  proxy: 'http://user:pass@host:port',
+}, 120);
+```
+
 ### With Proxy
 
 All task types support proxy configuration:
@@ -248,6 +274,8 @@ TaskType.RECAPTCHA_V3                    // ReCaptchaV3Task
 TaskType.RECAPTCHA_V3_PROXYLESS          // ReCaptchaV3TaskProxyLess
 TaskType.RECAPTCHA_V3_ENTERPRISE         // ReCaptchaV3EnterpriseTask
 TaskType.RECAPTCHA_V3_ENTERPRISE_PROXYLESS  // ReCaptchaV3EnterpriseTaskProxyLess
+TaskType.TURNSTILE                       // TurnstileTask
+TaskType.TURNSTILE_PROXYLESS             // TurnstileTaskProxyLess
 ```
 
 ## Documentation
@@ -273,6 +301,7 @@ See the [examples](examples/) directory for complete runnable examples:
 - [recaptcha-v2.ts](examples/recaptcha-v2.ts) - reCAPTCHA v2 solving
 - [recaptcha-v3.ts](examples/recaptcha-v3.ts) - reCAPTCHA v3 solving
 - [aws-waf.ts](examples/aws-waf.ts) - AWS WAF challenge solving
+- [turnstile.ts](examples/turnstile.ts) - Cloudflare Turnstile solving
 
 ### Advanced Examples
 Full integration examples in the [documentation](https://github.com/CapBypass-Development/capbypass-sdks/tree/main/docs/examples):

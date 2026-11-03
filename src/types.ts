@@ -29,6 +29,10 @@ export const TaskType = {
   // CaptchaFox
   CAPTCHA_FOX: 'CaptchaFoxTask',
   CAPTCHA_FOX_PROXYLESS: 'CaptchaFoxTaskProxyLess',
+
+  // Cloudflare Turnstile
+  TURNSTILE: 'TurnstileTask',
+  TURNSTILE_PROXYLESS: 'TurnstileTaskProxyLess',
 } as const;
 
 export type TaskTypeValue = typeof TaskType[keyof typeof TaskType];

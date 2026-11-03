@@ -235,6 +235,78 @@ describe('CapBypassClient', () => {
       expect(solution.gRecaptchaResponse).toBe('solved-token');
     });
 
+    it('should solve a TurnstileTaskProxyLess task', async () => {
+      mockPost
+        .mockResolvedValueOnce({ data: { errorId: 0, taskId: 'ts-task' } })
+        .mockResolvedValueOnce({
+          data: {
+            errorId: 0,
+            status: 'ready',
+            solution: { token: '0.turnstile-token', timing: { solveMs: 6120 } },
+          },
+        });
+
+      const solution = await client.solve({
+        type: TaskType.TURNSTILE_PROXYLESS,
+        websiteURL: 'https://example.com/login',
+        websiteKey: '0x4AAAAAAAxxxxxxxxxxxxxx',
+      });
+
+      expect(solution.token).toBe('0.turnstile-token');
+      expect(solution.timing.solveMs).toBe(6120);
+      expect(mockPost).toHaveBeenNthCalledWith(1, '/createTask', {
+        clientKey: 'test-key',
+        task: {
+          type: 'TurnstileTaskProxyLess',
+          websiteURL: 'https://example.com/login',
+          websiteKey: '0x4AAAAAAAxxxxxxxxxxxxxx',
+        },
+      });
+    });
+
+    it('should send proxy, action and cData of a TurnstileTask unchanged', async () => {
+      mockPost
+        .mockResolvedValueOnce({ data: { errorId: 0, taskId: 'ts-task' } })
+        .mockResolvedValueOnce({
+          data: { errorId: 0, status: 'ready', solution: { token: '0.turnstile-token' } },
+        });
+
+      const solution = await client.solve({
+        type: TaskType.TURNSTILE,
+        websiteURL: 'https://example.com/login',
+        websiteKey: '0x4AAAAAAAxxxxxxxxxxxxxx',
+        action: 'login',
+        cData: 'session-42',
+        proxy: 'http://user:pass@host:8080',
+      });
+
+      expect(solution.token).toBe('0.turnstile-token');
+      expect(mockPost.mock.calls[0][1].task).toEqual({
+        type: 'TurnstileTask',
+        websiteURL: 'https://example.com/login',
+        websiteKey: '0x4AAAAAAAxxxxxxxxxxxxxx',
+        action: 'login',
+        cData: 'session-42',
+        proxy: 'http://user:pass@host:8080',
+      });
+    });
+
+    it.each([
+      ['ERROR_INVALID_TASK_DATA', ValidationError],
+      ['ERROR_TASK_TYPE_INACTIVE', ValidationError],
+      ['ERROR_PROXY_BANNED', ValidationError],
+      ['ERROR_PROXY_CONNECTION_FAILED', ValidationError],
+      ['ERROR_TASK_QUEUE_FULL', InternalError],
+    ])('should map the gateway error %s of a Turnstile task', async (errorCode, errorClass) => {
+      mockPost.mockResolvedValue({
+        data: { errorId: 1, errorCode, errorDescription: 'x' },
+      });
+
+      await expect(
+        client.createTask({ type: TaskType.TURNSTILE, websiteURL: 'https://example.com' })
+      ).rejects.toThrow(errorClass);
+    });
+
     it('should throw SolverError when task fails', async () => {
       mockPost
         .mockResolvedValueOnce({
