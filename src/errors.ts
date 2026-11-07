@@ -158,7 +158,9 @@ export function parseError(errorCode: string, errorDescription: string): never {
     case 'ERROR_INVALID_DEVELOPER_KEY':
     case 'ERROR_PROXY_NOT_DEFINED':
     case 'ERROR_PROXY_CONNECTION_FAILED':
+    case 'ERROR_PROXY_FORMAT':
     case 'ERROR_PROXY_BANNED':
+    case 'ERROR_BLOCKED_TARGET':
     case 'ERROR_WRONG_TASK_TYPE':
     case 'ERROR_TASK_TYPE_COMING_SOON':
     case 'ERROR_TASK_TYPE_INACTIVE':

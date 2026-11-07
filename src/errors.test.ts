@@ -146,6 +146,14 @@ describe('CapBypass Errors', () => {
       expect(() => parseError('ERROR_PROXY_CONNECTION_FAILED', 'proxy unreachable')).toThrow(ValidationError);
     });
 
+    it('throws ValidationError for ERROR_PROXY_FORMAT', () => {
+      expect(() => parseError('ERROR_PROXY_FORMAT', 'malformed proxy')).toThrow(ValidationError);
+    });
+
+    it('throws ValidationError for ERROR_BLOCKED_TARGET', () => {
+      expect(() => parseError('ERROR_BLOCKED_TARGET', 'non-public address')).toThrow(ValidationError);
+    });
+
     it('throws ValidationError for ERROR_PROXY_BANNED', () => {
       expect(() => parseError('ERROR_PROXY_BANNED', 'proxy IP blocked')).toThrow(ValidationError);
     });
