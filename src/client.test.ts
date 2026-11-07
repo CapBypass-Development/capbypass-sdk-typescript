@@ -294,7 +294,9 @@ describe('CapBypassClient', () => {
     it.each([
       ['ERROR_INVALID_TASK_DATA', ValidationError],
       ['ERROR_TASK_TYPE_INACTIVE', ValidationError],
+      ['ERROR_PROXY_FORMAT', ValidationError],
       ['ERROR_PROXY_BANNED', ValidationError],
+      ['ERROR_BLOCKED_TARGET', ValidationError],
       ['ERROR_PROXY_CONNECTION_FAILED', ValidationError],
       ['ERROR_TASK_QUEUE_FULL', InternalError],
     ])('should map the gateway error %s of a Turnstile task', async (errorCode, errorClass) => {
